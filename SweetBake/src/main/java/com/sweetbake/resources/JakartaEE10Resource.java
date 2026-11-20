@@ -1,4 +1,4 @@
-package com.mycompany.sweetbake.resources;
+package com.sweetbake.resources;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;

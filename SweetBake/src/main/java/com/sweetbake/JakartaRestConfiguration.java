@@ -1,4 +1,4 @@
-package com.mycompany.sweetbake;
+package com.sweetbake;
 
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
