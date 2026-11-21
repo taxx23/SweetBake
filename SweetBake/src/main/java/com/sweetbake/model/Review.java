@@ -1,19 +1,12 @@
-
 package com.sweetbake.model;
-
-import java.time.LocalDateTime;
 
 public class Review {
 
     private int reviewId;
     private int orderId;
-    private int customerId;
+    private String customerName;
     private int rating;
     private String comment;
-    private LocalDateTime createdAt;
-
-    public Review() {
-    }
 
     public int getReviewId() {
         return reviewId;
@@ -31,12 +24,12 @@ public class Review {
         this.orderId = orderId;
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public int getRating() {
@@ -53,13 +46,5 @@ public class Review {
 
     public void setComment(String comment) {
         this.comment = comment;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

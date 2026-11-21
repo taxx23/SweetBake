@@ -1,4 +1,3 @@
-
 package com.sweetbake.util;
 
 import java.sql.Connection;
@@ -7,18 +6,16 @@ import java.sql.SQLException;
 
 public class DBConnection {
 
-    private static final String URL =
-            "jdbc:mysql://localhost:3306/sweetbake";
-
+    private static final String URL = "jdbc:mysql://localhost:3306/sweetbake";
     private static final String USER = "root";
+    private static final String PASSWORD = "root";
 
     public static Connection getConnection() throws SQLException {
-        String password = System.getenv("SWEETBAKE_DB_PASSWORD");
-
-        if (password == null || password.isEmpty()) {
-            throw new SQLException("Database password is not configured.");
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("MySQL driver not found");
         }
-
-        return DriverManager.getConnection(URL, USER, password);
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }

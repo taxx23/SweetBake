@@ -1,7 +1,4 @@
-
 package com.sweetbake.model;
-
-import java.time.LocalDateTime;
 
 public class User {
 
@@ -11,10 +8,6 @@ public class User {
     private String passwordHash;
     private String phone;
     private String role;
-    private LocalDateTime createdAt;
-
-    public User() {
-    }
 
     public int getUserId() {
         return userId;
@@ -62,13 +55,5 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

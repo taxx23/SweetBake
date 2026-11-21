@@ -1,4 +1,3 @@
-
 package com.sweetbake.model;
 
 public class Category {
@@ -7,10 +6,6 @@ public class Category {
     private String name;
     private String description;
     private String image;
-    private boolean active;
-
-    public Category() {
-    }
 
     public int getCategoryId() {
         return categoryId;
@@ -42,13 +37,5 @@ public class Category {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 }

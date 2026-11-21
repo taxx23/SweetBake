@@ -1,25 +1,19 @@
-
 package com.sweetbake.model;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Order {
 
     private int orderId;
     private int customerId;
-    private int categoryId;
-    private LocalDate pickupDate;
-    private String message;
+    private String customerName;
+    private String pickupDate;
     private String notes;
-    private BigDecimal totalPrice;
+    private double totalPrice;
     private String status;
-    private String rejectionReason;
-    private LocalDateTime createdAt;
-
-    public Order() {
-    }
+    private boolean reviewed;
+    private List<OrderItem> items = new ArrayList<>();
 
     public int getOrderId() {
         return orderId;
@@ -37,28 +31,20 @@ public class Order {
         this.customerId = customerId;
     }
 
-    public int getCategoryId() {
-        return categoryId;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
-    public LocalDate getPickupDate() {
+    public String getPickupDate() {
         return pickupDate;
     }
 
-    public void setPickupDate(LocalDate pickupDate) {
+    public void setPickupDate(String pickupDate) {
         this.pickupDate = pickupDate;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public String getNotes() {
@@ -69,11 +55,11 @@ public class Order {
         this.notes = notes;
     }
 
-    public BigDecimal getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
+    public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
 
@@ -85,19 +71,19 @@ public class Order {
         this.status = status;
     }
 
-    public String getRejectionReason() {
-        return rejectionReason;
+    public boolean isReviewed() {
+        return reviewed;
     }
 
-    public void setRejectionReason(String rejectionReason) {
-        this.rejectionReason = rejectionReason;
+    public void setReviewed(boolean reviewed) {
+        this.reviewed = reviewed;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public List<OrderItem> getItems() {
+        return items;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
     }
 }

@@ -1,5 +1,7 @@
 package com.sweetbake.controller;
 
+import com.sweetbake.dao.UserDAO;
+import com.sweetbake.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -7,57 +9,47 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.SQLException;
+import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends HttpServlet {
 
+    private UserDAO userDAO = new UserDAO();
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        request.getRequestDispatcher("/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        if (email == null || email.isBlank() || password == null || password.isBlank()) {
-            request.setAttribute("error", "Please enter both email and password.");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
-            return;
-        }
+        try {
+            User user = userDAO.findByEmail(email);
 
-        // TODO: look up user by email via UserDAO and verify password using BCrypt
-        // Temporary placeholder check until UserDAO & BCrypt are wired up
-        String role = null;
-        if ("admin@sweetbake.com".equalsIgnoreCase(email.trim()) && "admin123".equals(password)) {
-            role = "ADMIN";
-        } else if ("baker@sweetbake.com".equalsIgnoreCase(email.trim()) && "baker123".equals(password)) {
-            role = "BAKER";
-        } else if ("customer@sweetbake.com".equalsIgnoreCase(email.trim()) && "cust123".equals(password)) {
-            role = "CUSTOMER";
-        }
+            if (user == null || password == null || !BCrypt.checkpw(password, user.getPasswordHash())) {
+                request.setAttribute("error", "Wrong email or password.");
+                request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+                return;
+            }
 
-        if (role == null) {
-            request.setAttribute("error", "Invalid email or password.");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
-            return;
-        }
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
 
-        HttpSession session = request.getSession();
-        session.setAttribute("user", email.trim());
-        session.setAttribute("role", role);
-
-        if ("ADMIN".equals(role)) {
-            response.sendRedirect(request.getContextPath() + "/admin");
-        } else if ("BAKER".equals(role)) {
-            response.sendRedirect(request.getContextPath() + "/baker");
-        } else {
-            response.sendRedirect(request.getContextPath() + "/menu");
+            if (user.getRole().equals("ADMIN")) {
+                response.sendRedirect("admin");
+            } else if (user.getRole().equals("BAKER")) {
+                response.sendRedirect("baker");
+            } else {
+                response.sendRedirect("home");
+            }
+        } catch (SQLException e) {
+            throw new ServletException(e);
         }
     }
 }

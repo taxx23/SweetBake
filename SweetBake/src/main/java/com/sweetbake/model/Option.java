@@ -1,19 +1,13 @@
-
 package com.sweetbake.model;
-
-import java.math.BigDecimal;
 
 public class Option {
 
     private int optionId;
     private int categoryId;
+    private String categoryName;
     private String optionType;
     private String name;
-    private BigDecimal price;
-    private boolean active;
-
-    public Option() {
-    }
+    private double price;
 
     public int getOptionId() {
         return optionId;
@@ -29,6 +23,14 @@ public class Option {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getOptionType() {
@@ -47,19 +49,11 @@ public class Option {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 }

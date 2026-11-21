@@ -1,162 +1,157 @@
-
 package com.sweetbake.dao;
 
 import com.sweetbake.model.Order;
-import com.sweetbake.model.OrderOption;
+import com.sweetbake.model.OrderItem;
 import com.sweetbake.util.DBConnection;
-import java.sql.*;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderDAO {
 
-    public int createOrder(Order order, List<OrderOption> selectedOptions)
-            throws SQLException {
-
-        String orderSQL =
-        "INSERT INTO orders " +
-        "(customer_id, category_id, pickup_date, message, notes, total_price, status) " +
-        "VALUES (?, ?, ?, ?, ?, ?, 'PENDING')";
-
-        String optionSQL =
-        "INSERT INTO order_options " +
-        "(order_id, option_id, price_at_order) " +
-        "VALUES (?, ?, ?)";
+    public void addOrder(Order order) throws SQLException {
+        String orderSql = "INSERT INTO orders (customer_id, pickup_date, notes, total_price) VALUES (?, ?, ?, ?)";
+        String itemSql = "INSERT INTO order_items (order_id, category_id, quantity, price) VALUES (?, ?, ?, ?)";
+        String optionSql = "INSERT INTO order_item_options (item_id, option_id) VALUES (?, ?)";
 
         try (Connection conn = DBConnection.getConnection()) {
-            conn.setAutoCommit(false);
 
-            try {
-                int orderId;
+            PreparedStatement orderStmt = conn.prepareStatement(orderSql, Statement.RETURN_GENERATED_KEYS);
+            orderStmt.setInt(1, order.getCustomerId());
+            orderStmt.setString(2, order.getPickupDate());
+            orderStmt.setString(3, order.getNotes());
+            orderStmt.setDouble(4, order.getTotalPrice());
+            orderStmt.executeUpdate();
 
-                try (PreparedStatement stmt = conn.prepareStatement(
-                        orderSQL, Statement.RETURN_GENERATED_KEYS)) {
+            ResultSet orderKeys = orderStmt.getGeneratedKeys();
+            orderKeys.next();
+            int orderId = orderKeys.getInt(1);
 
-                    stmt.setInt(1, order.getCustomerId());
-                    stmt.setInt(2, order.getCategoryId());
-                    stmt.setDate(3, java.sql.Date.valueOf(order.getPickupDate()));
-                    stmt.setString(4, order.getMessage());
-                    stmt.setString(5, order.getNotes());
-                    stmt.setBigDecimal(6, order.getTotalPrice());
+            for (OrderItem item : order.getItems()) {
+                PreparedStatement itemStmt = conn.prepareStatement(itemSql, Statement.RETURN_GENERATED_KEYS);
+                itemStmt.setInt(1, orderId);
+                itemStmt.setInt(2, item.getCategoryId());
+                itemStmt.setInt(3, item.getQuantity());
+                itemStmt.setDouble(4, item.getPrice());
+                itemStmt.executeUpdate();
 
-                    stmt.executeUpdate();
+                ResultSet itemKeys = itemStmt.getGeneratedKeys();
+                itemKeys.next();
+                int itemId = itemKeys.getInt(1);
 
-                    try (ResultSet rs = stmt.getGeneratedKeys()) {
-                        if (!rs.next()) {
-                            throw new SQLException("Order ID was not generated.");
-                        }
-                        orderId = rs.getInt(1);
-                    }
+                for (int optionId : item.getOptionIds()) {
+                    PreparedStatement optionStmt = conn.prepareStatement(optionSql);
+                    optionStmt.setInt(1, itemId);
+                    optionStmt.setInt(2, optionId);
+                    optionStmt.executeUpdate();
                 }
-
-                if (selectedOptions != null) {
-                    try (PreparedStatement stmt =
-                            conn.prepareStatement(optionSQL)) {
-
-                        for (OrderOption option : selectedOptions) {
-                            stmt.setInt(1, orderId);
-                            stmt.setInt(2, option.getOptionId());
-                            stmt.setBigDecimal(3, option.getPriceAtOrder());
-                            stmt.addBatch();
-                        }
-
-                        stmt.executeBatch();
-                    }
-                }
-
-                conn.commit();
-                return orderId;
-
-            } catch (SQLException | RuntimeException e) {
-                conn.rollback();
-                throw e;
             }
         }
     }
-    
-    
-public boolean updateOrderStatus(
-        int orderId, String newStatus, int changedBy,
-        String rejectionReason) throws SQLException {
 
-    String[] allowedStatuses = {
-        "PENDING", "ACCEPTED", "REJECTED",
-        "BAKING", "READY", "PICKED_UP", "CANCELLED"
-    };
+    public List<Order> getOrdersByCustomer(int customerId) throws SQLException {
+        String sql = "SELECT o.*, u.full_name, r.review_id FROM orders o "
+                + "JOIN users u ON o.customer_id = u.user_id "
+                + "LEFT JOIN reviews r ON o.order_id = r.order_id "
+                + "WHERE o.customer_id = ? ORDER BY o.order_id DESC";
 
-    if (newStatus == null ||
-            !java.util.Arrays.asList(allowedStatuses).contains(newStatus)) {
-        throw new IllegalArgumentException("Invalid order status.");
-    }
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-    String selectSQL =
-            "SELECT status FROM orders WHERE order_id = ? FOR UPDATE";
-
-    String updateSQL =
-            "UPDATE orders SET status = ?, rejection_reason = ? " +
-            "WHERE order_id = ?";
-
-    String historySQL =
-            "INSERT INTO order_status_history " +
-            "(order_id, changed_by, old_status, new_status) " +
-            "VALUES (?, ?, ?, ?)";
-
-    try (Connection conn = DBConnection.getConnection()) {
-        conn.setAutoCommit(false);
-
-        try {
-            String oldStatus;
-
-            try (PreparedStatement stmt =
-                    conn.prepareStatement(selectSQL)) {
-
-                stmt.setInt(1, orderId);
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (!rs.next()) {
-                        conn.rollback();
-                        return false;
-                    }
-
-                    oldStatus = rs.getString("status");
-                }
-            }
-
-            if (oldStatus.equals(newStatus)) {
-                conn.rollback();
-                return false;
-            }
-
-            try (PreparedStatement stmt =
-                    conn.prepareStatement(updateSQL)) {
-
-                stmt.setString(1, newStatus);
-                stmt.setString(2,
-                        "REJECTED".equals(newStatus)
-                                ? rejectionReason : null);
-                stmt.setInt(3, orderId);
-                stmt.executeUpdate();
-            }
-
-            try (PreparedStatement stmt =
-                    conn.prepareStatement(historySQL)) {
-
-                stmt.setInt(1, orderId);
-                stmt.setInt(2, changedBy);
-                stmt.setString(3, oldStatus);
-                stmt.setString(4, newStatus);
-                stmt.executeUpdate();
-            }
-
-            conn.commit();
-            return true;
-
-        } catch (SQLException | RuntimeException e) {
-            conn.rollback();
-            throw e;
+            stmt.setInt(1, customerId);
+            return readOrders(conn, stmt.executeQuery());
         }
     }
-}
 
-    
+    public List<Order> getAllOrders() throws SQLException {
+        String sql = "SELECT o.*, u.full_name, r.review_id FROM orders o "
+                + "JOIN users u ON o.customer_id = u.user_id "
+                + "LEFT JOIN reviews r ON o.order_id = r.order_id "
+                + "ORDER BY o.order_id DESC";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            return readOrders(conn, stmt.executeQuery());
+        }
+    }
+
+    public void updateStatus(int orderId, String status) throws SQLException {
+        String sql = "UPDATE orders SET status = ? WHERE order_id = ? AND status <> 'CANCELLED'";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, status);
+            stmt.setInt(2, orderId);
+            stmt.executeUpdate();
+        }
+    }
+
+    public void cancelOrder(int orderId, int customerId) throws SQLException {
+        String sql = "UPDATE orders SET status = 'CANCELLED' "
+                + "WHERE order_id = ? AND customer_id = ? AND status = 'PENDING'";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, orderId);
+            stmt.setInt(2, customerId);
+            stmt.executeUpdate();
+        }
+    }
+
+    private List<Order> readOrders(Connection conn, ResultSet rs) throws SQLException {
+        List<Order> orders = new ArrayList<>();
+
+        while (rs.next()) {
+            Order order = new Order();
+            order.setOrderId(rs.getInt("order_id"));
+            order.setCustomerId(rs.getInt("customer_id"));
+            order.setCustomerName(rs.getString("full_name"));
+            order.setPickupDate(rs.getString("pickup_date"));
+            order.setNotes(rs.getString("notes"));
+            order.setTotalPrice(rs.getDouble("total_price"));
+            order.setStatus(rs.getString("status"));
+            order.setReviewed(rs.getObject("review_id") != null);
+            orders.add(order);
+        }
+
+        for (Order order : orders) {
+            order.setItems(getItems(conn, order.getOrderId()));
+        }
+        return orders;
+    }
+
+    private List<OrderItem> getItems(Connection conn, int orderId) throws SQLException {
+        List<OrderItem> items = new ArrayList<>();
+        String sql = "SELECT i.item_id, i.category_id, c.name, i.quantity, i.price, "
+                + "GROUP_CONCAT(op.name ORDER BY op.option_id SEPARATOR ', ') AS details "
+                + "FROM order_items i "
+                + "JOIN categories c ON i.category_id = c.category_id "
+                + "LEFT JOIN order_item_options io ON i.item_id = io.item_id "
+                + "LEFT JOIN options op ON io.option_id = op.option_id "
+                + "WHERE i.order_id = ? "
+                + "GROUP BY i.item_id, i.category_id, c.name, i.quantity, i.price";
+
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, orderId);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            OrderItem item = new OrderItem();
+            item.setItemId(rs.getInt("item_id"));
+            item.setCategoryId(rs.getInt("category_id"));
+            item.setCategoryName(rs.getString("name"));
+            item.setQuantity(rs.getInt("quantity"));
+            item.setPrice(rs.getDouble("price"));
+            item.setDetails(rs.getString("details"));
+            items.add(item);
+        }
+        return items;
+    }
 }
