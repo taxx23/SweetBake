@@ -1,20 +1,46 @@
 body {
-    background-color: #f6f2ec;
+    background-color: #f4efe7;
     color: #2f2b25;
+    font-family: "Jost", Arial, sans-serif;
+    font-weight: 300;
 }
 
-h1, h2, h5, .navbar-brand {
-    font-family: Georgia, "Times New Roman", serif;
+img {
+    max-width: 100%;
 }
 
-.navbar-brand {
+.title {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 40px;
+}
+
+.small-caps {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #857c6e;
+}
+
+.small-text {
+    font-size: 14px;
+    color: #857c6e;
+}
+
+.link {
     color: #5f6643;
-    font-size: 26px;
+    font-weight: 500;
+}
+
+.plain-link {
+    color: #2f2b25;
+    text-decoration: none;
 }
 
 .btn-olive {
     background-color: #5f6643;
     color: white;
+    border-radius: 30px;
+    padding: 10px 24px;
 }
 
 .btn-olive:hover {
@@ -22,25 +48,152 @@ h1, h2, h5, .navbar-brand {
     color: white;
 }
 
-.top-image {
+.btn-olive.btn-sm {
+    padding: 4px 14px;
+}
+
+.btn-light-outline {
+    border: 1px solid white;
+    color: white;
+    border-radius: 30px;
+    padding: 10px 24px;
+}
+
+.btn-light-outline:hover {
+    background-color: white;
+    color: #5f6643;
+}
+
+.top-nav {
+    padding: 16px 0;
+    background-color: white;
+}
+
+.logo {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 28px;
+    color: #2f2b25;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.logo span {
+    display: block;
+    font-family: "Jost", Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #857c6e;
+}
+
+.nav-links a {
+    margin-left: 18px;
+    color: #2f2b25;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.nav-links a.btn-olive {
+    color: white;
+}
+
+.hero {
+    padding: 20px 0 60px;
+}
+
+.big-word {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 150px;
+    color: #5f6643;
+    text-align: center;
+    line-height: 1;
+}
+
+.photo {
     width: 100%;
-    height: 380px;
+    height: 480px;
+    object-fit: cover;
+    border-radius: 200px 200px 12px 12px;
+}
+
+.photo-full {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    max-height: 480px;
     object-fit: cover;
 }
 
-.dessert-image {
-    height: 220px;
-    object-fit: cover;
+.about {
+    background-color: white;
 }
 
-.stars {
-    color: #c9a227;
-    font-size: 18px;
+.about-text {
+    padding: 48px;
+}
+
+.section {
+    padding: 50px 0;
+}
+
+.card-photo {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.item-name {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 26px;
+    margin-top: 12px;
+}
+
+.menu-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    height: 100%;
+}
+
+.green-band {
+    background-color: #5f6643;
+    color: white;
+    padding: 40px 0;
+}
+
+.white-box {
+    background-color: white;
+    padding: 24px;
+    border-radius: 12px;
+}
+
+.form-box {
+    background-color: white;
+    max-width: 440px;
+    margin: 0 auto;
+    padding: 32px;
+    border-radius: 12px;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.check {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.summary {
+    position: sticky;
+    top: 20px;
 }
 
 .total {
-    font-size: 20px;
-    font-weight: bold;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 44px;
+    color: #5f6643;
 }
 
 .quantity-input {
@@ -58,32 +211,59 @@ h1, h2, h5, .navbar-brand {
     align-self: center;
 }
 
-.form-box {
-    background-color: white;
-    padding: 24px;
-    border-radius: 8px;
-}
-
-.small-box {
-    max-width: 420px;
-    margin: 0 auto;
+.stars {
+    color: #c9a227;
+    font-size: 18px;
 }
 
 .status {
-    padding: 3px 10px;
-    border-radius: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
     font-size: 13px;
     background-color: #e9e9e9;
 }
 
 .PENDING {
     background-color: #faefd3;
+    color: #8a6200;
 }
 
-.ACCEPTED, .BAKING, .READY {
+.ACCEPTED, .BAKING {
+    background-color: #fbe3ea;
+    color: #a2385a;
+}
+
+.READY {
     background-color: #ddf0eb;
+    color: #1f7466;
 }
 
 .REJECTED, .CANCELLED {
     background-color: #f8d7da;
+    color: #842029;
+}
+
+.footer {
+    background-color: white;
+    padding: 24px 0;
+    margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+    .big-word {
+        font-size: 64px;
+    }
+
+    .photo {
+        height: 320px;
+    }
+
+    .nav-links a {
+        margin-left: 0;
+        margin-right: 14px;
+    }
+
+    .about-text {
+        padding: 28px 20px;
+    }
 }
