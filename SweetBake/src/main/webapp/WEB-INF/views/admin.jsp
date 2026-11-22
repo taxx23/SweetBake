@@ -62,6 +62,68 @@
             </c:forEach>
         </div>
 
+        <div class="white-box mb-4 table-responsive">
+            <h2 class="item-name mt-0">Bakers</h2>
+            <c:if test="${empty bakers}">
+                <p class="small-text mb-0">There are no baker accounts.</p>
+            </c:if>
+            <c:if test="${not empty bakers}">
+                <table class="table align-middle">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th></th>
+                    </tr>
+                    <c:forEach var="baker" items="${bakers}">
+                        <tr>
+                            <td><c:out value="${baker.fullName}"/></td>
+                            <td><c:out value="${baker.email}"/></td>
+                            <td><c:out value="${baker.phone}"/></td>
+                            <td>
+                                <form action="admin" method="post">
+                                    <input type="hidden" name="action" value="removeBaker">
+                                    <input type="hidden" name="userId" value="${baker.userId}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:if>
+        </div>
+
+        <div class="white-box mb-4 table-responsive">
+            <h2 class="item-name mt-0">Reviews</h2>
+            <c:if test="${empty reviews}">
+                <p class="small-text mb-0">There are no reviews yet.</p>
+            </c:if>
+            <c:if test="${not empty reviews}">
+                <table class="table align-middle">
+                    <tr>
+                        <th>Customer</th>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                        <th></th>
+                    </tr>
+                    <c:forEach var="review" items="${reviews}">
+                        <tr>
+                            <td><c:out value="${review.customerName}"/></td>
+                            <td class="stars"><c:forEach begin="1" end="${review.rating}">&#9733;</c:forEach></td>
+                            <td><c:out value="${review.comment}"/></td>
+                            <td>
+                                <form action="admin" method="post">
+                                    <input type="hidden" name="action" value="deleteReview">
+                                    <input type="hidden" name="reviewId" value="${review.reviewId}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:if>
+        </div>
+
         <div class="row g-4">
             <div class="col-md-6">
                 <form action="admin" method="post" class="white-box h-100">

@@ -21,7 +21,7 @@ public class HomeServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             request.setAttribute("topCategory", menuDAO.getTopCategory());
-            request.setAttribute("reviews", reviewDAO.getLatestReviews(3));
+            request.setAttribute("reviews", reviewDAO.getLatestReviews(6));
         } catch (SQLException e) {
             throw new ServletException(e);
         }

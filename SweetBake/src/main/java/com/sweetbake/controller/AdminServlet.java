@@ -1,6 +1,7 @@
 package com.sweetbake.controller;
 
 import com.sweetbake.dao.MenuDAO;
+import com.sweetbake.dao.ReviewDAO;
 import com.sweetbake.dao.UserDAO;
 import com.sweetbake.model.Category;
 import com.sweetbake.model.Option;
@@ -19,6 +20,7 @@ public class AdminServlet extends HttpServlet {
 
     private MenuDAO menuDAO = new MenuDAO();
     private UserDAO userDAO = new UserDAO();
+    private ReviewDAO reviewDAO = new ReviewDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -26,6 +28,8 @@ public class AdminServlet extends HttpServlet {
         try {
             request.setAttribute("categories", menuDAO.getCategories());
             request.setAttribute("options", menuDAO.getAllOptions());
+            request.setAttribute("bakers", userDAO.getBakers());
+            request.setAttribute("reviews", reviewDAO.getAllReviews());
         } catch (SQLException e) {
             throw new ServletException(e);
         }
@@ -65,6 +69,14 @@ public class AdminServlet extends HttpServlet {
             } else if ("removeOption".equals(action)) {
                 menuDAO.removeOption(Integer.parseInt(request.getParameter("optionId")));
                 request.setAttribute("message", "Option removed.");
+
+            } else if ("removeBaker".equals(action)) {
+                userDAO.deleteBaker(Integer.parseInt(request.getParameter("userId")));
+                request.setAttribute("message", "Baker account removed.");
+
+            } else if ("deleteReview".equals(action)) {
+                reviewDAO.deleteReview(Integer.parseInt(request.getParameter("reviewId")));
+                request.setAttribute("message", "Review deleted.");
 
             } else if ("addBaker".equals(action)) {
                 String email = request.getParameter("email");

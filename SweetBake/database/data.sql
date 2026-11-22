@@ -3,7 +3,12 @@ USE sweetbake;
 INSERT INTO users (user_id, full_name, email, password_hash, phone, role) VALUES
 (1, 'Bakery Admin', 'admin@sweetbake.com', '$2a$10$DhL6.GwRlh6U8SWNRpHNY.tiDw4XsU7sPUbhk3S3ceViH4gDqajgy', '0500000001', 'ADMIN'),
 (2, 'Main Baker', 'baker@sweetbake.com', '$2a$10$LP5xac3UotKY0p3L6x/Tzeh7iNsw9/5yOO876WIYuUuHty6OG0/Q.', '0500000002', 'BAKER'),
-(3, 'Test Customer', 'customer@sweetbake.com', '$2a$10$eAaw/pK.QYIirabrOJOfqeAnx3Q/2toiuDM2sTvyuiK/DrFRswQYK', '0500000003', 'CUSTOMER');
+(3, 'Test Customer', 'customer@sweetbake.com', '$2a$10$eAaw/pK.QYIirabrOJOfqeAnx3Q/2toiuDM2sTvyuiK/DrFRswQYK', '0500000003', 'CUSTOMER'),
+(4, 'Sara Ahmed', 'sara@sweetbake.com', '$2a$10$eAaw/pK.QYIirabrOJOfqeAnx3Q/2toiuDM2sTvyuiK/DrFRswQYK', '0500000004', 'CUSTOMER'),
+(5, 'Mariam Ali', 'mariam@sweetbake.com', '$2a$10$eAaw/pK.QYIirabrOJOfqeAnx3Q/2toiuDM2sTvyuiK/DrFRswQYK', '0500000005', 'CUSTOMER'),
+(6, 'Noor Hassan', 'noor@sweetbake.com', '$2a$10$eAaw/pK.QYIirabrOJOfqeAnx3Q/2toiuDM2sTvyuiK/DrFRswQYK', '0500000006', 'CUSTOMER'),
+(7, 'Fatima Khalid', 'fatima@sweetbake.com', '$2a$10$eAaw/pK.QYIirabrOJOfqeAnx3Q/2toiuDM2sTvyuiK/DrFRswQYK', '0500000007', 'CUSTOMER'),
+(8, 'Layla Omar', 'layla@sweetbake.com', '$2a$10$eAaw/pK.QYIirabrOJOfqeAnx3Q/2toiuDM2sTvyuiK/DrFRswQYK', '0500000008', 'CUSTOMER');
 
 INSERT INTO categories (category_id, name, description, image) VALUES
 (1, 'Custom Cakes', 'Choose the size, flavor, filling and toppings.', 'desserts/cakes.jpg'),
@@ -76,19 +81,39 @@ INSERT INTO options (option_id, category_id, option_type, name, price) VALUES
 INSERT INTO orders (order_id, customer_id, pickup_date, notes, total_price, status) VALUES
 (1, 3, '2026-11-15', 'Write Happy Birthday Sara on the cake', 370, 'PICKED_UP'),
 (2, 3, '2026-12-10', NULL, 170, 'BAKING'),
-(3, 3, '2026-12-20', 'Please pack the tarts in two boxes', 390, 'PENDING');
+(3, 3, '2026-12-20', 'Please pack the tarts in two boxes', 390, 'PENDING'),
+(4, 4, '2026-11-08', NULL, 135, 'PICKED_UP'),
+(5, 5, '2026-11-10', 'Wedding cake, please add white flowers', 320, 'PICKED_UP'),
+(6, 6, '2026-11-12', NULL, 216, 'PICKED_UP'),
+(7, 7, '2026-11-14', NULL, 230, 'PICKED_UP'),
+(8, 8, '2026-11-16', NULL, 103, 'PICKED_UP');
 
 INSERT INTO order_items (item_id, order_id, category_id, quantity, price) VALUES
 (1, 1, 1, 1, 240),
 (2, 1, 2, 1, 130),
 (3, 2, 3, 1, 170),
-(4, 3, 5, 2, 195);
+(4, 3, 5, 2, 195),
+(5, 4, 2, 1, 135),
+(6, 5, 1, 1, 320),
+(7, 6, 4, 2, 108),
+(8, 7, 3, 1, 230),
+(9, 8, 5, 1, 103);
 
 INSERT INTO order_item_options (item_id, option_id) VALUES
 (1, 2), (1, 7), (1, 12), (1, 18),
 (2, 22), (2, 26), (2, 28), (2, 30),
 (3, 33), (3, 36), (3, 39),
-(4, 51), (4, 55), (4, 56);
+(4, 51), (4, 55), (4, 56),
+(5, 22), (5, 24), (5, 29), (5, 31),
+(6, 3), (6, 9), (6, 15), (6, 19),
+(7, 43), (7, 45), (7, 48),
+(8, 34), (8, 35), (8, 40),
+(9, 50), (9, 54), (9, 56), (9, 59);
 
 INSERT INTO reviews (review_id, order_id, rating, comment) VALUES
-(1, 1, 5, 'Beautiful cake and the cupcakes were fresh. Will order again!');
+(1, 1, 5, 'Beautiful cake and the cupcakes were fresh. Will order again!'),
+(2, 4, 5, 'The cupcakes were soft and the frosting was perfect.'),
+(3, 5, 5, 'Our wedding cake was beautiful and tasted amazing.'),
+(4, 6, 4, 'Rich and fudgy brownies. Next time I want more nuts.'),
+(5, 7, 5, 'The best cheesecake I have tried in Ajman.'),
+(6, 8, 4, 'Fresh fruit and a crispy crust. Pickup was on time.');

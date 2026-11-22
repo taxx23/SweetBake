@@ -17,11 +17,11 @@
         <c:forEach var="order" items="${orders}">
             <div class="white-box mb-3">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h3 class="item-name mt-0">Order #${order.orderId}</h3>
+                    <fmt:parseDate value="${order.pickupDate}" pattern="yyyy-MM-dd" var="pickup"/>
+                    <h3 class="item-name mt-0">Pickup on <fmt:formatDate value="${pickup}" pattern="d MMM yyyy"/></h3>
                     <span class="status ${order.status}">${order.status}</span>
                 </div>
                 <p class="small-text">
-                    Pickup: ${order.pickupDate} &middot;
                     Total: AED <fmt:formatNumber value="${order.totalPrice}" maxFractionDigits="2"/>
                 </p>
 
